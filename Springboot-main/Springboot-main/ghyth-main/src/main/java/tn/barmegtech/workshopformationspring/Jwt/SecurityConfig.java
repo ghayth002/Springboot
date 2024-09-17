@@ -35,7 +35,7 @@ public class SecurityConfig {
            "/configuration/security",
            "/swagger-ui/**",
            "/webjars/**",
-           "/swagger-ui.html","/api/v1/auth/**",};
+           "/swagger-ui.html","/api/v1/**",};
    private final JwtAuthenticationFilter jwtAuthFilter;
    private final AuthenticationProvider authenticationProvider;
    private final LogoutHandler logoutHandler;

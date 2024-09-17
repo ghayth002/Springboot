@@ -28,7 +28,7 @@ public class UserController {
 
 
     //send mail for email verification
-    @PostMapping("/resetrequestpassword/{email}")
+    @GetMapping("/resetrequestpassword/{email}")
     public ResponseEntity<String> verifyEmail(@PathVariable String email){
 
         return passwordResetTokenService.verifyEmail(email);
@@ -36,7 +36,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/verifyOtp/{otp}/{email}")
+    @PostMapping ("/verifyOtp/{otp}/{email}")
     public ResponseEntity<String> verifyOtp(@PathVariable Integer otp,@PathVariable String email){
         return passwordResetTokenService.verifyOtp(otp, email);
     }
