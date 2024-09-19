@@ -3,18 +3,20 @@ package tn.barmegtech.workshopformationspring.servics;
 
 import org.springframework.http.ResponseEntity;
 import tn.barmegtech.workshopformationspring.Email.ChangePasswordResetRequest;
+import tn.barmegtech.workshopformationspring.dto.SteponeReset;
+import tn.barmegtech.workshopformationspring.dto.Stepthreechp;
+import tn.barmegtech.workshopformationspring.dto.SteptwoOtp;
 
 
 public interface PasswordResetTokenService {
-   ResponseEntity<String> verifyEmail(String email);
+   ResponseEntity<String> verifyEmail(SteponeReset steponeReset);
 
 
-   ResponseEntity<String> verifyOtp(Integer otp, String email);
+   ResponseEntity<String> verifyOtp(SteptwoOtp steptwoOtp);
 
 
    ResponseEntity<String> changePasswordHandler(
-           ChangePasswordResetRequest changePasswordResetRequest,
-           String email
+           Stepthreechp stepthreechp
    );
 
 

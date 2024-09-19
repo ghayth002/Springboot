@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import tn.barmegtech.workshopformationspring.Email.ChangePasswordResetRequest;
 import tn.barmegtech.workshopformationspring.Email.EmailDetails;
 import tn.barmegtech.workshopformationspring.Email.EmailService;
+import tn.barmegtech.workshopformationspring.dto.SteponeReset;
+import tn.barmegtech.workshopformationspring.dto.Stepthreechp;
+import tn.barmegtech.workshopformationspring.dto.SteptwoOtp;
 import tn.barmegtech.workshopformationspring.entites.ForgotPasswordToken;
 import tn.barmegtech.workshopformationspring.entites.User;
 import tn.barmegtech.workshopformationspring.repository.ForgotPasswordTokenRepository;
@@ -29,14 +32,14 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
     private final PasswordEncoder passwordEncoder;
 
     //send mail for email verification
-    public ResponseEntity<String> verifyEmail(String email){
-        User user = userRepository.findByEmail(email)
+    public ResponseEntity<String> verifyEmail(SteponeReset steponeReset){
+        User user = userRepository.findByEmail(steponeReset.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Please provide an valid email"));
         //time to formulate the mail body
         int token = otpGenerator();
         EmailDetails mailBody = EmailDetails
                 .builder()
-                .to(email)
+                .to(steponeReset.getEmail())
                 .subject("OTP for Forgot Password request")
                 .messageBody("This is the OTP for your Forgot Password request : " + token)
                 .build();
@@ -56,12 +59,12 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 
     }
 
-    public ResponseEntity<String> verifyOtp(Integer token, String email){
-        User user = userRepository.findByEmail(email)
+    public ResponseEntity<String> verifyOtp(SteptwoOtp steptwoOtp){
+        User user = userRepository.findByEmail(steptwoOtp.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Please provide an valid email"));
 
-        ForgotPasswordToken fp =forgotPasswordRepository.findByTokenAndUser(token,user)
-                .orElseThrow(()-> new RuntimeException("Invalid OTP for email"+email ));
+        ForgotPasswordToken fp =forgotPasswordRepository.findByTokenAndUser(steptwoOtp.getOtp(),user)
+                .orElseThrow(()-> new RuntimeException("Invalid OTP for email"+steptwoOtp.getEmail()));
 
         //Check if the expiration time of OTP is not expired
         if (fp.getExpirationTime().before(Date.from(Instant.now()))){
@@ -76,18 +79,15 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 
     //Now User Can change the password
 
-    public ResponseEntity<String> changePasswordHandler(
-            ChangePasswordResetRequest changePassword,
-            String email
-    ){
-        boolean areEqual = (changePassword.getNewPassword()).equals(changePassword.getConfirmationPassword());
+    public ResponseEntity<String> changePasswordHandler(Stepthreechp stepthreechp){
+        boolean areEqual = (stepthreechp.getNewPassword()).equals(stepthreechp.getConfirmationPassword());
         if (!areEqual){
             return new ResponseEntity<>("Please enter the password again!",HttpStatus.EXPECTATION_FAILED);
         }
 
         //We need to encode password
-        String encodedPassword = passwordEncoder.encode(changePassword.getNewPassword());
-        userRepository.updatePassword(email,encodedPassword);
+        String encodedPassword = passwordEncoder.encode(stepthreechp.getNewPassword());
+        userRepository.updatePassword(stepthreechp.getEmail(),encodedPassword);
         return ResponseEntity.ok("Password has been succesfully changed!");
 
     }

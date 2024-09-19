@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import tn.barmegtech.workshopformationspring.Email.ChangePasswordResetRequest;
+import tn.barmegtech.workshopformationspring.dto.SteponeReset;
+import tn.barmegtech.workshopformationspring.dto.Stepthreechp;
+import tn.barmegtech.workshopformationspring.dto.SteptwoOtp;
 import tn.barmegtech.workshopformationspring.entites.User;
 import tn.barmegtech.workshopformationspring.serviceimpl.UserService;
 import tn.barmegtech.workshopformationspring.servics.PasswordResetTokenService;
@@ -28,27 +31,25 @@ public class UserController {
 
 
     //send mail for email verification
-    @GetMapping("/resetrequestpassword/{email}")
-    public ResponseEntity<String> verifyEmail(@PathVariable String email){
+    @PostMapping("/resetrequestpassword")
+    public ResponseEntity<String> verifyEmail(@RequestBody SteponeReset steponeReset) {
 
-        return passwordResetTokenService.verifyEmail(email);
+        return passwordResetTokenService.verifyEmail(steponeReset);
 
     }
 
 
-    @PostMapping ("/verifyOtp/{otp}/{email}")
-    public ResponseEntity<String> verifyOtp(@PathVariable Integer otp,@PathVariable String email){
-        return passwordResetTokenService.verifyOtp(otp, email);
+    @PostMapping ("/verifyOtp")
+    public ResponseEntity<String> verifyOtp(@RequestBody SteptwoOtp steptwoOtp){
+        return passwordResetTokenService.verifyOtp(steptwoOtp);
     }
 
     //Now User Can change the password
 
-    @PostMapping("/resetPassword/{email}")
+    @PostMapping("/resetPassword")
     public ResponseEntity<String> changePasswordHandler(
-            @RequestBody ChangePasswordResetRequest changePassword,
-            @PathVariable String email
-    ){
-        return passwordResetTokenService.changePasswordHandler(changePassword,email);
+            @RequestBody Stepthreechp stepthreechp){
+        return passwordResetTokenService.changePasswordHandler(stepthreechp);
     }
 
  
